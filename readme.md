@@ -11,7 +11,8 @@ Currently it supports the creation of the following configurations:
 * Install the same requisites from [dHSM Client](https://github.com/niclabs/dtc) README.
 * Clone this repository with `git clone https://github.com/niclabs/dtcconfig`.
 * Build this module with `go build` inside the cloned repository.
-* Execute `sudo ./dtcconfig` using the parameters explained below.
+
+# How to use 
 
 ## RSA mode
 
@@ -30,4 +31,8 @@ The command has the following parameters:
   -t, --threshold int         (Required) Minimum number of nodes required to sign    
 ```
 
-* The `threshold` value should be less or equal than the nodes value.
+* The `threshold` value should be less or equal than the length of the nodes list.
+
+The command will create two sets of configuration files:
+ * It will create one client configuration, located on `<config>` path.
+ * It will create a folder on `<nodes-config>` path, creating another folder with the name pattern `node_<i>` for each node declared.

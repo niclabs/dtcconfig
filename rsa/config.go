@@ -106,13 +106,11 @@ func (conf *ClientConfigParams) GenerateConfig() error {
 }
 
 //GenerateNodeConfig creates the configuration for the node files
-func (conf *ClientConfigParams) GenerateNodeConfig(clientPK string, nodeConf *dtc.NodeConfig, nodeSK string) error {
-	outPath := path.Join(conf.NodesConfigPath, fmt.Sprintf("%s_%d", nodeConf.Host, nodeConf.Port))
+func (conf *ClientConfigParams) GenerateNodeConfig(i int, clientPK string, nodeConf *dtc.NodeConfig, nodeSK string) error {
+	outPath := path.Join(conf.NodesConfigPath, fmt.Sprintf("node_%d", i))
 	if _, err := os.Stat(outPath); os.IsNotExist(err) {
 		if err := os.MkdirAll(outPath, 0755); err != nil {
-			return errors.Wrap(err, fmt.Sprintf("cannot write node %s:%d config folder",
-				nodeConf.Host,
-				nodeConf.Port))
+			return errors.Wrap(err, fmt.Sprintf("cannot write node %d config folder", i))
 		}
 	}
 	c := node.Config{
@@ -128,7 +126,7 @@ func (conf *ClientConfigParams) GenerateNodeConfig(clientPK string, nodeConf *dt
 	v := viper.New()
 	v.Set("config", c)
 	if err := v.WriteConfigAs(path.Join(outPath, "config.yaml")); err != nil {
-		return errors.Wrap(err, fmt.Sprintf("cannot write node %s:%d config file", nodeConf.Host, nodeConf.Port))
+		return errors.Wrap(err, fmt.Sprintf("cannot write node %d config file", i))
 	}
 	_, _ = fmt.Fprintf(os.Stderr, "config file written successfully in %s\n", outPath)
 	return nil
@@ -137,7 +135,7 @@ func (conf *ClientConfigParams) GenerateNodeConfig(clientPK string, nodeConf *dt
 // CreateNodes creates
 func (conf *ClientConfigParams) CreateNodes(clientPubKey string) ([]*dtc.NodeConfig, error) {
 	dtcNodeConfig := make([]*dtc.NodeConfig, len(conf.Nodes))
-	for _, aNode := range conf.Nodes {
+	for i, aNode := range conf.Nodes {
 		host, port, err := GetHostAndPort(aNode)
 		if err != nil {
 			return nil, err
@@ -151,7 +149,7 @@ func (conf *ClientConfigParams) CreateNodes(clientPubKey string) ([]*dtc.NodeCon
 			Host:      host,
 			Port:      port,
 		}
-		if err := conf.GenerateNodeConfig(clientPubKey, dtcNodeConfig[i], nodePrivKey); err != nil {
+		if err := conf.GenerateNodeConfig(i, clientPubKey, dtcNodeConfig[i], nodePrivKey); err != nil {
 			return nil, err
 		}
 	}
