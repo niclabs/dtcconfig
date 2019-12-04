@@ -6,6 +6,11 @@ Currently it supports the creation of the following configurations:
 
 * RSA
 
+# Quick Use Mode
+
+* Install the same requisites from [dHSM Client](https://github.com/niclabs/dtc) README.
+* Execute `go run github.com/niclabs/dtcconfig <args>`.
+
 # How to compile
 
 * Install the same requisites from [dHSM Client](https://github.com/niclabs/dtc) README.
@@ -36,3 +41,11 @@ The command has the following parameters:
 The command will create two sets of configuration files:
  * It will create one client configuration, located on `<config>` path.
  * It will create a folder on `<nodes-config>` path, creating another folder with the name pattern `node_<i>` for each node declared.
+
+# Advanced
+
+The following options are not required for the basic operation of this command.
+
+## Generate Curve
+
+If you execute `./dtcconfig generate-curve`, you can generate a key pair for its use with new nodes.
