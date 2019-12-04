@@ -26,6 +26,7 @@ type ClientConfigParams struct {
 
 // ClientConfig groups the three types of config used by DTC Client Library
 type ClientConfig struct {
+	LogFile string
 	General dtc.Config
 	Sqlite3 dtc.Sqlite3Config
 	ZMQ     dtc.ZMQConfig
@@ -56,7 +57,8 @@ func (conf *ClientConfigParams) GenerateConfig() error {
 			return errors.Wrap(err, "Error creating logfile")
 		}
 	}
-	generalConf := ClientConfig{
+	clientConf := ClientConfig{
+		LogFile: conf.LogPath,
 		General: dtc.Config{
 			DTC: dtc.DTCConfig{
 				MessagingType: "zmq",
@@ -91,7 +93,7 @@ func (conf *ClientConfigParams) GenerateConfig() error {
 		},
 	}
 	v := viper.New()
-	v.Set("dtc", generalConf)
+	v.Set("dtc", clientConf)
 	configFolder := path.Dir(conf.ConfigPath)
 	if _, err := os.Stat(configFolder); os.IsNotExist(err) {
 		if err := os.MkdirAll(configFolder, 0755); err != nil {
