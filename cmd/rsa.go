@@ -5,9 +5,15 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var serverConfig rsa.ServerConfigParams
+var serverConfig rsa.ClientConfigParams
 
 func init() {
+	rsaCmd.Flags().StringVarP(
+		&serverConfig.Host,
+		"host",
+		"H",
+		"",
+		"IP or domain name that the nodes will see from the client")
 	rsaCmd.Flags().StringSliceVarP(
 		&serverConfig.Nodes,
 		"nodes",
@@ -42,17 +48,17 @@ func init() {
 		&serverConfig.Threshold,
 		"threshold",
 		"t",
-		len(serverConfig.Nodes)/2,
+		0,
 		"Minimum number of nodes required to sign")
+	_ = rsaCmd.MarkFlagRequired("host")
 	_ = rsaCmd.MarkFlagRequired("nodes")
-	_ = rsaCmd.MarkFlagRequired("local-config")
-	_ = rsaCmd.MarkFlagRequired("nodes-config")
+	_ = rsaCmd.MarkFlagRequired("threshold")
 }
 
 var rsaCmd = &cobra.Command{
-	Use:   "rsaCmd",
+	Use:   "rsa",
 	Short: "Generates a configuration file for tcrsa nodes and server",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		return serverConfig.Generate()
+		return serverConfig.GenerateConfig()
 	},
 }
