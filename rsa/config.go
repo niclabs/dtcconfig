@@ -13,6 +13,7 @@ import (
 	"strings"
 )
 
+// ClientConfigParams groups the params received by Command Line
 type ClientConfigParams struct {
 	LogPath         string
 	ConfigPath      string
@@ -23,6 +24,7 @@ type ClientConfigParams struct {
 	Nodes           []string
 }
 
+// ClientConfig groups the three types of config used by
 type ClientConfig struct {
 	General dtc.Config
 	Sqlite3 dtc.Sqlite3Config
@@ -137,7 +139,7 @@ func (conf *ClientConfigParams) GenerateConfig() error {
 		},
 	}
 	v := viper.New()
-	v.Set("config", generalConf)
+	v.Set("dtc", generalConf)
 	configFolder := path.Dir(conf.ConfigPath)
 	if _, err := os.Stat(configFolder); os.IsNotExist(err) {
 		if err := os.MkdirAll(configFolder, 0755); err != nil {
