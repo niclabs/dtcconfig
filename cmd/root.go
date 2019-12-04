@@ -8,6 +8,7 @@ import (
 
 func init() {
 	rootCmd.AddCommand(rsaCmd)
+	rootCmd.AddCommand(genCurveCmd)
 	Log = log.New(os.Stderr, "", 0)
 }
 
