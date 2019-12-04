@@ -24,62 +24,14 @@ type ClientConfigParams struct {
 	Nodes           []string
 }
 
-// ClientConfig groups the three types of config used by
+// ClientConfig groups the three types of config used by DTC Client Library
 type ClientConfig struct {
 	General dtc.Config
 	Sqlite3 dtc.Sqlite3Config
 	ZMQ     dtc.ZMQConfig
 }
 
-func (conf *ClientConfigParams) CreateNodes(clientPubKey string) ([]*dtc.NodeConfig, error) {
-	dtcNodeConfig := make([]*dtc.NodeConfig, len(conf.Nodes))
-	for i, node := range conf.Nodes {
-		host, port, err := GetHostAndPort(node)
-		if err != nil {
-			return nil, err
-		}
-		nodePubKey, nodePrivKey, err := zmq4.NewCurveKeypair()
-		if err != nil {
-			return nil, err
-		}
-		dtcNodeConfig[i] = &dtc.NodeConfig{
-			PublicKey: nodePubKey,
-			Host:      host,
-			Port:      port,
-		}
-		if err := conf.GenerateNodeConfig(i, clientPubKey, dtcNodeConfig[i], nodePrivKey); err != nil {
-			return nil, err
-		}
-	}
-	return dtcNodeConfig, nil
-}
-
-func (conf *ClientConfigParams) GenerateNodeConfig(i int, clientPK string, nodeConf *dtc.NodeConfig, nodeSK string) error {
-	outPath := path.Join(conf.NodesConfigPath, fmt.Sprintf("node_%d", i))
-	if _, err := os.Stat(outPath); os.IsNotExist(err) {
-		if err := os.MkdirAll(outPath, 0755); err != nil {
-			return errors.Wrap(err, fmt.Sprintf("cannot write node %d config folder", i))
-		}
-	}
-	c := node.Config{
-		PublicKey:  nodeConf.PublicKey,
-		PrivateKey: nodeSK,
-		Host:       nodeConf.Host,
-		Port:       nodeConf.Port,
-		Client: &node.ClientConfig{
-			PublicKey: clientPK,
-			Host:      conf.Host,
-		},
-	}
-	v := viper.New()
-	v.Set("config", c)
-	if err := v.WriteConfigAs(path.Join(outPath, "config.yaml")); err != nil {
-		return errors.Wrap(err, fmt.Sprintf("cannot write node %d config file", i))
-	}
-	_, _ = fmt.Fprintf(os.Stderr, "config file written successfully in %s\n", outPath)
-	return nil
-}
-
+// GenerateConfig creates all the configuration related to RSA DTC implementation
 func (conf *ClientConfigParams) GenerateConfig() error {
 	if conf.Threshold > len(conf.Nodes) {
 		return fmt.Errorf("threshold must be less or equal than nodes number")
@@ -100,7 +52,7 @@ func (conf *ClientConfigParams) GenerateConfig() error {
 		}
 	}
 	if _, err := os.Stat(conf.LogPath); os.IsNotExist(err) {
-		if _, err := os.Create(conf.LogPath); err != nil {
+		if _, err := os.OpenFile(conf.LogPath, os.O_CREATE, 0666); err != nil {
 			return errors.Wrap(err, "Error creating logfile")
 		}
 	}
@@ -147,10 +99,63 @@ func (conf *ClientConfigParams) GenerateConfig() error {
 		}
 	}
 	if err := v.WriteConfigAs(conf.ConfigPath); err != nil {
-		return errors.Wrap(err,"cannot write config file")
+		return errors.Wrap(err, "cannot write config file")
 	}
 	_, _ = fmt.Fprintf(os.Stderr, "config file written successfully in %s\n", conf.ConfigPath)
 	return nil
+}
+
+//GenerateNodeConfig creates the configuration for the node files
+func (conf *ClientConfigParams) GenerateNodeConfig(clientPK string, nodeConf *dtc.NodeConfig, nodeSK string) error {
+	outPath := path.Join(conf.NodesConfigPath, fmt.Sprintf("%s_%d", nodeConf.Host, nodeConf.Port))
+	if _, err := os.Stat(outPath); os.IsNotExist(err) {
+		if err := os.MkdirAll(outPath, 0755); err != nil {
+			return errors.Wrap(err, fmt.Sprintf("cannot write node %s:%d config folder",
+				nodeConf.Host,
+				nodeConf.Port))
+		}
+	}
+	c := node.Config{
+		PublicKey:  nodeConf.PublicKey,
+		PrivateKey: nodeSK,
+		Host:       nodeConf.Host,
+		Port:       nodeConf.Port,
+		Client: &node.ClientConfig{
+			PublicKey: clientPK,
+			Host:      conf.Host,
+		},
+	}
+	v := viper.New()
+	v.Set("config", c)
+	if err := v.WriteConfigAs(path.Join(outPath, "config.yaml")); err != nil {
+		return errors.Wrap(err, fmt.Sprintf("cannot write node %s:%d config file", nodeConf.Host, nodeConf.Port))
+	}
+	_, _ = fmt.Fprintf(os.Stderr, "config file written successfully in %s\n", outPath)
+	return nil
+}
+
+// CreateNodes creates
+func (conf *ClientConfigParams) CreateNodes(clientPubKey string) ([]*dtc.NodeConfig, error) {
+	dtcNodeConfig := make([]*dtc.NodeConfig, len(conf.Nodes))
+	for _, aNode := range conf.Nodes {
+		host, port, err := GetHostAndPort(aNode)
+		if err != nil {
+			return nil, err
+		}
+		nodePubKey, nodePrivKey, err := zmq4.NewCurveKeypair()
+		if err != nil {
+			return nil, err
+		}
+		dtcNodeConfig[i] = &dtc.NodeConfig{
+			PublicKey: nodePubKey,
+			Host:      host,
+			Port:      port,
+		}
+		if err := conf.GenerateNodeConfig(clientPubKey, dtcNodeConfig[i], nodePrivKey); err != nil {
+			return nil, err
+		}
+	}
+	return dtcNodeConfig, nil
 }
 
 // GetHostAndPort splits a host and port string. Returns an error if something goes wrong.
