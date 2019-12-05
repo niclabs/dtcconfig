@@ -24,7 +24,7 @@ func init() {
 		&serverConfig.ConfigPath,
 		"config",
 		"c",
-		"/etc/dtc/config.yaml",
+		"./config.yaml",
 		"path where to output the local config file")
 	rsaCmd.Flags().StringVarP(
 		&serverConfig.NodesConfigPath,
@@ -36,13 +36,13 @@ func init() {
 		&serverConfig.LogPath,
 		"log",
 		"l",
-		"/var/log/dtc.log",
+		"/tmp/dtc.log",
 		"path to a file where to output the services logs")
 	rsaCmd.Flags().StringVarP(
 		&serverConfig.DBPath,
 		"db",
 		"d",
-		"/etc/dtc/db.sqlite3",
+		"./db.sqlite3",
 		"path to a file where to put Sqlite3 database")
 	rsaCmd.Flags().IntVarP(
 		&serverConfig.Threshold,
