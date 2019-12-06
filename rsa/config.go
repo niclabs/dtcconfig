@@ -21,6 +21,7 @@ type ClientConfigParams struct {
 	DBPath          string
 	Threshold       int
 	Host            string
+	Timeout         uint16
 	Nodes           []string
 }
 
@@ -89,7 +90,7 @@ func (conf *ClientConfigParams) GenerateConfig() error {
 			PublicKey:  servPubKey,
 			PrivateKey: servPrivKey,
 			Nodes:      nodes,
-			Timeout:    0,
+			Timeout:    conf.Timeout,
 		},
 	}
 	v := viper.New()

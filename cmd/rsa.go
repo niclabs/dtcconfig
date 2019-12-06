@@ -50,6 +50,12 @@ func init() {
 		"t",
 		0,
 		"Minimum number of nodes required to sign")
+	rsaCmd.Flags().Uint16VarP(
+		&serverConfig.Timeout,
+		"threshold",
+		"T",
+		10,
+		"Minimum number of nodes required to sign")
 	_ = rsaCmd.MarkFlagRequired("host")
 	_ = rsaCmd.MarkFlagRequired("nodes")
 	_ = rsaCmd.MarkFlagRequired("threshold")

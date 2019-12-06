@@ -1,6 +1,10 @@
 # DTC Config Generator
 
-This program creates automatically configurations to use with [dHSM Client](https://github.com/niclabs/dtc) and its [nodes](github.com/dtc/dtcnode).
+This program creates automatically configurations to use with [DTC](https://github.com/niclabs/dtc) and its [nodes](github.com/dtc/dtcnode).
+
+For more information, check the [DTC project wiki](https://github.com/niclabs/dtc/wiki).
+
+## The command 
 
 Currently it supports the creation of the following configurations:
 
@@ -8,12 +12,12 @@ Currently it supports the creation of the following configurations:
 
 # Quick Use Mode
 
-* Install the same requisites from [dHSM Client](https://github.com/niclabs/dtc) README.
+* Install the same requisites from [DTC](https://github.com/niclabs/dtc) README.
 * Execute `go run github.com/niclabs/dtcconfig <args>`.
 
 # How to compile
 
-* Install the same requisites from [dHSM Client](https://github.com/niclabs/dtc) README.
+* Install the same requisites from [DTC](https://github.com/niclabs/dtc) README.
 * Clone this repository with `git clone https://github.com/niclabs/dtcconfig`.
 * Build this module with `go build` inside the cloned repository.
 
