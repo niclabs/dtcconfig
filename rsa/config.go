@@ -128,7 +128,7 @@ func (conf *ClientConfigParams) GenerateNodeConfig(i int, clientPK string, nodeC
 	}
 	v := viper.New()
 	v.Set("config", c)
-	if err := v.WriteConfigAs(path.Join(outPath, "config.yaml")); err != nil {
+	if err := v.WriteConfigAs(path.Join(outPath, "dtcnode-config.yaml")); err != nil {
 		return errors.Wrap(err, fmt.Sprintf("cannot write node %d config file", i))
 	}
 	_, _ = fmt.Fprintf(os.Stderr, "config file written successfully in %s\n", outPath)

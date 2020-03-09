@@ -24,7 +24,7 @@ func init() {
 		&serverConfig.ConfigPath,
 		"config",
 		"c",
-		"./config.yaml",
+		"./dtc-config.yaml",
 		"path where to output the local config file")
 	rsaCmd.Flags().StringVarP(
 		&serverConfig.NodesConfigPath,

@@ -30,7 +30,7 @@ Currently it supports the creation of the following configurations:
 The command has the following parameters:
 
 ```
-  -c, --config string         path where to output the local config file (default "/etc/dtc/config.yaml")
+  -c, --config string         path where to output the local config file (default "/etc/dtc/dtc-config.yaml")
   -d, --db string             path to a file where to put Sqlite3 database (default "/etc/dtc/db.sqlite3")
   -h, --help                  help for rsa
   -H, --host string           (Required) IP or domain name that the nodes will see from the client
