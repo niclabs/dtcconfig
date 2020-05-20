@@ -4,3 +4,4 @@
 tests/dhsm-signer/dtc/config/
 tests/dhsm-signer/dtcnode/config/
 tests/pkcs11-test/config
+/dtc-config.yaml
