@@ -2,15 +2,16 @@ package rsa
 
 import (
 	"fmt"
-	dtc "github.com/niclabs/dtc/v2/config"
-	node "github.com/niclabs/dtcnode/v2/config"
-	"github.com/pebbe/zmq4"
-	"github.com/pkg/errors"
-	"github.com/spf13/viper"
 	"os"
 	"path"
 	"strconv"
 	"strings"
+
+	dtc "github.com/niclabs/dtc/v3/config"
+	node "github.com/niclabs/dtcnode/v3/config"
+	"github.com/pebbe/zmq4"
+	"github.com/pkg/errors"
+	"github.com/spf13/viper"
 )
 
 // ClientConfigParams groups the params received by Command Line
