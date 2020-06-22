@@ -1,17 +1,19 @@
 package cmd
 
 import (
-	"github.com/spf13/cobra"
 	"log"
 	"os"
+
+	"github.com/spf13/cobra"
 )
 
 func init() {
-	rootCmd.AddCommand(rsaCmd)
+	rootCmd.AddCommand(createCmd)
 	rootCmd.AddCommand(genCurveCmd)
 	Log = log.New(os.Stderr, "", 0)
 }
 
+// Log is used by all the subcommands
 var Log *log.Logger
 
 var rootCmd = &cobra.Command{
@@ -22,6 +24,7 @@ var rootCmd = &cobra.Command{
 	For more information, visit "https://github.com/niclabs/dtcconfig".`,
 }
 
+// Execute executes the program
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
 		Log.Printf("Error: %s", err)

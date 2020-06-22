@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+
 	"github.com/pebbe/zmq4"
 	"github.com/spf13/cobra"
 )

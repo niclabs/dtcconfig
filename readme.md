@@ -6,10 +6,6 @@ For more information, check the [DTC project wiki](https://github.com/niclabs/dt
 
 ## The command 
 
-Currently it supports the creation of the following configurations:
-
-* RSA
-
 # Quick Use Mode
 
 * Install the same requisites from [DTC](https://github.com/niclabs/dtc) README.
@@ -23,16 +19,16 @@ Currently it supports the creation of the following configurations:
 
 # How to use 
 
-## RSA mode
+## Create Configuration mode
 
-`./dtcconfig rsa`
+`./dtcconfig create`
 
 The command has the following parameters:
 
 ```
   -c, --config string         path where to output the local config file (default "/etc/dtc/dtc-config.yaml")
   -d, --db string             path to a file where to put Sqlite3 database (default "/etc/dtc/db.sqlite3")
-  -h, --help                  help for rsa
+  -h, --help                  help for command
   -H, --host string           (Required) IP or domain name that the nodes will see from the client
   -l, --log string            path to a file where to output the services logs (default "/var/log/dtc.log")
   -n, --nodes strings         (Required) comma separated list of nodes in ip:port format

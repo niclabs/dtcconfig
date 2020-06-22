@@ -1,11 +1,11 @@
-package rsa
+package config
 
 import (
 	"fmt"
+	"net/url"
 	"os"
 	"path"
 	"strconv"
-	"strings"
 
 	dtc "github.com/niclabs/dtc/v3/config"
 	node "github.com/niclabs/dtcnode/v3/config"
@@ -34,7 +34,7 @@ type ClientConfig struct {
 	ZMQ     dtc.ZMQConfig
 }
 
-// GenerateConfig creates all the configuration related to RSA DTC implementation
+// GenerateConfig creates all the configuration related to DTC implementation
 func (conf *ClientConfigParams) GenerateConfig() error {
 	if conf.Threshold > len(conf.Nodes) {
 		return fmt.Errorf("threshold must be less or equal than nodes number")
@@ -69,8 +69,8 @@ func (conf *ClientConfigParams) GenerateConfig() error {
 			},
 			Criptoki: dtc.CriptokiConfig{
 				ManufacturerID:  "NICLabs",
-				Model:           "dHSM RSA",
-				Description:     "Distributed HSM using RSA signatures",
+				Model:           "dHSM",
+				Description:     "Distributed HSM",
 				SerialNumber:    "1",
 				MinPinLength:    3,
 				MaxPinLength:    10,
@@ -162,15 +162,19 @@ func (conf *ClientConfigParams) CreateNodes(clientPubKey string) ([]*dtc.NodeCon
 
 // GetHostAndPort splits a host and port string. Returns an error if something goes wrong.
 func GetHostAndPort(ipPort string) (ip string, port uint16, err error) {
-	nodeArr := strings.Split(ipPort, ":")
-	if len(nodeArr) != 2 {
-		err = fmt.Errorf("node ip and port format invalid. It should be ip:port\n")
+	hostURL, err := url.Parse("zmq://" + ipPort)
+	if err != nil {
 		return
 	}
-	ip = nodeArr[0]
-	portInt, err := strconv.Atoi(nodeArr[1])
+	ip = hostURL.Hostname()
+	portStr := hostURL.Port()
+	if len(portStr) == 0 {
+		err = fmt.Errorf("port not defined", err)
+		return
+	}
+	portInt, err := strconv.Atoi(portStr)
 	if err != nil {
-		err = fmt.Errorf("could not convert port to int: %s\n", err)
+		err = fmt.Errorf("could not convert port to integer: %s", err)
 		return
 	}
 	port = uint16(portInt)
